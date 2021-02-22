@@ -1,0 +1,26 @@
+version: "3"
+services:
+  app:
+    container_name: api-gateway
+    restart: always
+    build: .
+    ports:
+      - "8000:80"
+    links:
+      - mongo
+      - keycloak
+  mongo:
+    container_name: mongo
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - $HOME/mongodb/data:/data/db mongo
+  keycloak:
+    container_name: keycloak
+    image: quay.io/keycloak/keycloak:11.0.3
+    ports:
+      - "8080:8080"
+    environment:
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=password
