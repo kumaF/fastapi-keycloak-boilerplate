@@ -1,7 +1,5 @@
 # StreamSens API Gateway
 
-![CI](https://github.com/primesens/streamsens-api-gateway/workflows/CI/badge.svg?branch=staging&event=push)
-
 ## Dependencies
 
 - Keycloak
@@ -51,3 +49,8 @@ In Admin console
     ```
     uvicorn app.main:app --reload
     ```
+
+### Deploy into production
+
+  - Make sure keycloak is connected to a mysql db
+  - Refer to the given k8 configs to get to know how to deploy MySQL & Mongo persistant volumes with persistant volume claims

@@ -1,0 +1,96 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+ name: mysql-pv
+ labels:
+  type: local
+spec:
+ storageClassName: manual
+ capacity:
+  storage: 1Gi
+ accessModes:
+  - ReadWriteOnce
+ hostPath:
+  path: "/mnt/mysql_data"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: mysql-pvc
+  name: mysql-pvc
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: manual
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysqldb-standalone
+spec:
+  serviceName: mysqldb
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysqldb
+  template:
+    metadata:
+      labels:
+        app: mysqldb
+        selector: mysqldb-standalone
+    spec:
+      containers:
+        - name: mysqldb-standalone
+          image: mysql:8.0.23
+          volumeMounts:
+          - name: mysql-pvc
+            mountPath: /var/lib/mysql
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: sampleapp-secret
+                  key: MYSQL_ROOT_PASSWORD
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: sampleapp-secret
+                  key: MYSQL_USER
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: sampleapp-secret
+                  key: MYSQL_PASSWORD
+            - name: MYSQL_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: sampleapp-configmap
+                  key: MYSQL_DATABASE
+  volumeClaimTemplates:
+  - metadata:
+      name: mysql-pvc
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysqldb
+  labels:
+    app: mysqldb
+spec:
+  ports:
+    - name: http
+      port: 3306
+      targetPort: 3306
+  clusterIP: None
+  selector:
+    app: mysqldb
+  type: ClusterIP

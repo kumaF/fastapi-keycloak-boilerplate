@@ -1,0 +1,76 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak
+  labels:
+    app: keycloak
+spec:
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: keycloak
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak
+  namespace: default
+  labels:
+    app: keycloak
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keycloak
+  template:
+    metadata:
+      labels:
+        app: keycloak
+    spec:
+      containers:
+        - name: keycloak
+          image: quay.io/keycloak/keycloak:11.0.3
+          env:
+            - name: KEYCLOAK_USER
+              valueFrom:
+                secretKeyRef:
+                  name: sampleapp-secret
+                  key: KEYCLOAK_USERNAME
+            - name: KEYCLOAK_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: sampleapp-secret
+                  key: KEYCLOAK_PASSWORD
+            - name: DB_VENDOR
+              value: MYSQL
+            - name: DB_ADDR
+              value: mysqldb-standalone-0.mysqldb
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: sampleapp-secret
+                  key: MYSQL_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: sampleapp-secret
+                  key: MYSQL_PASSWORD
+            - name: DB_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: sampleapp-configmap
+                  key: MYSQL_DATABASE                
+            - name: PROXY_ADDRESS_FORWARDING
+              value: "true"
+          ports:
+            - name: http
+              containerPort: 8080
+            - name: https
+              containerPort: 8443
+          readinessProbe:
+            httpGet:
+              path: /auth/realms/master
+              port: 8080

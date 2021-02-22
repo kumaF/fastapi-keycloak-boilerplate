@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sampleapp-configmap
+data:
+  MONGO_HOST: mongodb-standalone-0.mongodb
+  MONGO_PORT: "27017"
+  MONGO_DB_NAME: sampleapp_auth_db
+  KEYCLOAK_SERVER: http://keycloak:8080/auth/
+  KEYCLOAK_REALM: myrealm
+  KEYCLOAK_CLIENT: myclient
+  MYSQL_DATABASE: keycloak_db
