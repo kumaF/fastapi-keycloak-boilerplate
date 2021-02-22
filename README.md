@@ -1,4 +1,4 @@
-# StreamSens API Gateway
+# Fastapi Keycloak Boilerplate
 
 ## Dependencies
 
