@@ -7,7 +7,15 @@ from starlette.status import (
     HTTP_412_PRECONDITION_FAILED
 )
 
-from .db import open_db_connection, close_db_connection
+from .keycloak_client import (
+    init_openid,
+    init_kc_admin
+)
+
+from .db import (
+    open_db_connection,
+    close_db_connection
+)
 
 async def validate_batch_responses(responses: list) -> list:
     resp: list = []
@@ -87,6 +95,8 @@ async def inline_try_except(fn: str, default: str, ref):
 
 
 def startup_handler():
+    init_kc_admin()
+    init_openid()
     open_db_connection()
 
 def shutdown_handler():

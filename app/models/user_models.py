@@ -7,10 +7,6 @@ from pydantic import (
     Field
 )
 
-from .project_models import (
-    SubtitleProject,
-)
-
 class BaseUser(BaseModel):
     email: str = Field(...)
     username: str = Field(...)
@@ -20,9 +16,6 @@ class BaseUser(BaseModel):
 
 class MongoUser(BaseUser):
     user_id: str = Field(...)
-    subtitle_projects: List[SubtitleProject] = Field([])
-    stream_projects: list = Field([])
-    transcord_projects: list = Field([])
 
 class User(BaseUser):
     password: str = Field(...)
@@ -86,9 +79,6 @@ class UpdateUser(BaseModel):
     first_name: Optional[str] = None
     last_name: Optional[str] = None
     password: Optional[str] = None
-    subtitle_projects: List[SubtitleProject] = None
-    stream_projects: list = None
-    transcording_projects: list = None
 
 class OutUser(BaseModel):
     user_id: str = Field(...)
@@ -96,6 +86,3 @@ class OutUser(BaseModel):
     first_name: str = Field(...)
     last_name: str = Field(...)
     email: str = Field(...)
-    # subtitle_projects: List[OutUserSubtitleProject] = Field([])
-    # stream_projects: list = Field([])
-    # transcording_projects: list = Field([])

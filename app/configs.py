@@ -20,7 +20,7 @@ MONGO_USERS_COLLECTION = config("MONGO_USERS_COLLECTION", cast=str, default='use
 MONGO_URL = f'mongodb://{MONGO_HOST}:{MONGO_PORT}'
 MONGO_TIMEOUT = 1000
 
-SECRET_KEY = config('SECRET_KEY', cast=str, default='09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7')
+SECRET_KEY = config('SECRET_KEY', cast=str, default='fc463eb5-d6f8-4f37-971b-6261407fec5d')
 ALGORITHM = config('ALGORITHM', cast=str, default='HS256')
 ACCESS_TOKEN_EXP = config('ACCESS_TOKEN_EXP', cast=int, default=60*24)
 REFRESH_TOKEN_EXP = config('REFRESH_TOKEN_EXP', cast=int, default=60*24*30)
@@ -28,6 +28,6 @@ REFRESH_TOKEN_EXP = config('REFRESH_TOKEN_EXP', cast=int, default=60*24*30)
 
 KEYCLOAK_SERVER = config('KEYCLOAK_SERVER', cast=str, default='http://localhost:8080/auth/')
 KEYCLOAK_USERNAME = config('KEYCLOAK_USERNAME', cast=str, default='admin')
-KEYCLOAK_PASSWORD = config('KEYCLOAK_PASSWORD', cast=str, default='pass@123')
+KEYCLOAK_PASSWORD = config('KEYCLOAK_PASSWORD', cast=str, default='password')
 KEYCLOAK_REALM = config('KEYCLOAK_REALM', cast=str, default='myrealm')
 KEYCLOAK_CLIENT = config('KEYCLOAK_CLIENT', cast=str, default='myclient')

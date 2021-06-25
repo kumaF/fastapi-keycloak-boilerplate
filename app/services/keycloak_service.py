@@ -13,6 +13,7 @@ from keycloak import (
     KeycloakOpenID
 )
 
+from ..keycloak_client import get_clients
 from ..models import UpdateUser
 from ..configs import (
     KEYCLOAK_SERVER,
@@ -26,41 +27,7 @@ from ..configs import (
 class KeyCloakService:
     def __init__(self) -> None:
         super().__init__()
-        self._keycloak_admin = self.__init_admin()
-        self._keycloak_openid = self.__init_openid()
-
-    def __init_admin(self):
-        try:
-            keycloak_admin = KeycloakAdmin(
-                server_url=KEYCLOAK_SERVER,
-                username=KEYCLOAK_USERNAME,
-                password=KEYCLOAK_PASSWORD,
-                realm_name='master',
-                verify=True
-            )
-
-            return keycloak_admin
-        except Exception as e:
-            raise HTTPException(
-                status_code=HTTP_503_SERVICE_UNAVAILABLE,
-                detail='Keycloak server connection failed'
-            )
-    
-    def __init_openid(self):
-        try:
-            keycloak_openid = KeycloakOpenID(
-                server_url=KEYCLOAK_SERVER,
-                client_id=KEYCLOAK_CLIENT,
-                realm_name=KEYCLOAK_REALM,
-                client_secret_key=SECRET_KEY
-            )
-
-            return keycloak_openid
-        except Exception as e:
-            raise HTTPException(
-                status_code=HTTP_503_SERVICE_UNAVAILABLE,
-                detail='Keycloak server connection failed'
-            )
+        self._keycloak_admin, self._keycloak_openid = get_clients()
 
     async def create_user(self, user: dict):
         self._keycloak_admin.realm_name = KEYCLOAK_REALM
